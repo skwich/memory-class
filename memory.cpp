@@ -26,10 +26,10 @@ DWORD memory::getProcess(const wchar_t* procname)
 	return procId; // возвращаем номер процесса - получаем номер процесса
 }
 
-uintptr_t memory::getModule(DWORD procId, const wchar_t* modulename)
+DWORD memory::getModule(DWORD procId, const wchar_t* modulename)
 {
-	uintptr_t baseAddress = 0;
-	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE32, 0);// получаем хэндл всех открытых модулей
+	DWORD baseAddress = 0;
+	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE32, this->hProc);// получаем хэндл всех открытых модулей
 	if (hSnap != INVALID_HANDLE_VALUE) // делаем проверку на пригодность хэндла
 	{
 		MODULEENTRY32 entry; // создаем переменную из класса MODULEENTRY32
@@ -41,7 +41,7 @@ uintptr_t memory::getModule(DWORD procId, const wchar_t* modulename)
 			{
 				if (!_wcsicmp(entry.szModule, modulename)) // делаем проверку на сравнение строк ( если строки равны, будет возврат false )
 				{
-					baseAddress = *(uintptr_t*)entry.modBaseAddr; // присваиваем адрес в переменную
+					baseAddress = (DWORD)entry.modBaseAddr; // присваиваем адрес в переменную
 					break; // выходим из цикла
 				}
 			} while (Module32Next(hSnap, &entry)); // если проверка не пройдена, то берем следующий модуль
@@ -51,9 +51,9 @@ uintptr_t memory::getModule(DWORD procId, const wchar_t* modulename)
 	return baseAddress; // возвращаем адрес модуля - получаем адрес модуля
 }
 
-uintptr_t memory::GetOffsetsAddress(uintptr_t ptr, std::vector<uint32_t> offsets)
+DWORD memory::GetOffsetsAddress(DWORD ptr, std::vector<uint32_t> offsets)
 {
-	uintptr_t addr = ptr;
+	DWORD addr = ptr;
 	for (uint32_t i = 0; i < offsets.size(); ++i)
 	{
 		ReadProcessMemory(this->hProc, (BYTE*)(addr + offsets.at(i)), &offsets.at(i), sizeof(offsets.at(i)), 0);

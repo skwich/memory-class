@@ -20,8 +20,8 @@ public:
 	}
 
 	DWORD getProcess(const wchar_t* procname);
-	uintptr_t getModule(DWORD procId, const wchar_t* modulename);
-	uintptr_t GetOffsetsAddress(uintptr_t ptr, std::vector<uint32_t> offsets);
+	DWORD getModule(DWORD procId, const wchar_t* modulename);
+	DWORD GetOffsetsAddress(DWORD ptr, std::vector<uint32_t> offsets);
 	
 	template <class T>
 	T readmem(T addr)
