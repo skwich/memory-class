@@ -29,7 +29,7 @@ DWORD memory::getProcess(const wchar_t* procname)
 DWORD memory::getModule(DWORD procId, const wchar_t* modulename)
 {
 	DWORD baseAddress = 0;
-	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE32, this->hProc);// получаем хэндл всех открытых модулей
+	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE32, procId);// получаем хэндл всех открытых модулей
 	if (hSnap != INVALID_HANDLE_VALUE) // делаем проверку на пригодность хэндла
 	{
 		MODULEENTRY32 entry; // создаем переменную из класса MODULEENTRY32
